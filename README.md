@@ -20,7 +20,7 @@ conda create --name cmpe-206-computer-network-design-project
 
 ### (Optional) Activate python virtual environment with conda
 ```bash
-conda activate --name cmpe-206-computer-network-design-project
+conda activate cmpe-206-computer-network-design-project
 ```
 
 ### Clean build
