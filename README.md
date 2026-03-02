@@ -1,4 +1,5 @@
 # CMPE-206 Computer Network Design Project
+https://www.nsnam.org
 
 ## Owners
 - [Bhimsen Thapa Chhetri](https://github.com/bhimsenthapa1)
@@ -37,7 +38,7 @@ conda activate cmpe-206-computer-network-design-project
 ### Verify build
 ```bash
 ./ns3 run first
-./ns3 test
+./test.py
 ```
 
 ### Clone simulations repository into scratch directory
