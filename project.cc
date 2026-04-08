@@ -1,5 +1,6 @@
 #include "simulations/example.cc"
 #include "simulations/first.cc"
+#include "simulations/buffer-simulation.cc"
 
 #include "ns3/core-module.h"
 
@@ -18,6 +19,8 @@ main(int argc, char* argv[])
         runExample();
     } else if (simulation == "first") {
         runFirst();
+    } else if (simulation == "buffer-simulation") {
+        runBufferSimulation();
     } else {
         NS_LOG_UNCOND("Simulation not found");
     }
