@@ -6,9 +6,10 @@
 #include "ns3/flow-monitor-helper.h"
 #include "ns3/netanim-module.h"
 #include "ns3/mobility-module.h"
+#include <functional>
 #include <iostream>
 #include <map>
-#include <string>
+#include <memory>
 #include "../constants.h"
 
 using namespace ns3;
@@ -148,11 +149,14 @@ namespace {
         m.animationInterface->SetConstantPosition(t.nodeContainerDestinations.Get(0), 200, 25);
         m.animationInterface->SetConstantPosition(t.nodeContainerDestinations.Get(1), 200, 75);
 
+        m.animationInterface->UpdateNodeColor(t.nodeContainerRouters.Get(0), 0, 255, 0); // Green
+        m.animationInterface->UpdateNodeColor(t.nodeContainerRouters.Get(1), 0, 255, 0); // Green
+
         m.animationInterface->UpdateNodeDescription(t.nodeContainerSources.Get(0), "Source 0");
         m.animationInterface->UpdateNodeDescription(t.nodeContainerSources.Get(1), "Source 1");
         m.animationInterface->UpdateNodeDescription(t.nodeContainerRouters.Get(0), "Router 0");
         m.animationInterface->UpdateNodeDescription(t.nodeContainerRouters.Get(1), "Router 1");
-        m.animationInterface->UpdateNodeDescription(t.nodeContainerDestinations.Get(0), "Destination 1");
+        m.animationInterface->UpdateNodeDescription(t.nodeContainerDestinations.Get(0), "Destination 0");
         m.animationInterface->UpdateNodeDescription(t.nodeContainerDestinations.Get(1), "Destination 1");
 
         std::string baselineLinkDescription = "Baseline link (Rate: 100Mbps, Delay: 1ms)";
@@ -196,7 +200,7 @@ namespace {
      * TCP simulation.
      */
     void runBufferSimulationTcp(std::string testName, std::string queueSize) {
-        NS_LOG_UNCOND("Starting runBufferSimulationTcp test" << testName << " with queue size: " << queueSize);
+        NS_LOG_UNCOND("Starting runBufferSimulationTcp test " << testName << " with queue size: " << queueSize);
 
         Config::SetDefault("ns3::TcpL4Protocol::SocketType", StringValue("ns3::TcpCubic"));
         Config::SetDefault("ns3::TcpSocket::SndBufSize", SIZE_2_MB);
