@@ -306,7 +306,7 @@ namespace {
                 onOffHelper_d0.SetAttribute("OnTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(ON_TIME) + "]"));
                 onOffHelper_d0.SetAttribute("OffTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(OFF_TIME) + "]"));
                 onOffHelper_d0.SetAttribute("DataRate", StringValue("8Mbps")); // 80% of total traffic
-                onOffHelper_d0.SetAttribute("PacketSize", UintegerValue(SIZE_1_KB));
+                onOffHelper_d0.SetAttribute("PacketSize", SIZE_1_KB);
                 ApplicationContainer applicationContainer_s0 = onOffHelper_d0.Install(t.nodeContainerSources.Get(0));
                 applicationContainer_s0.Start(Seconds(SIMULATION_START_TIME));
                 applicationContainer_s0.Stop(Seconds(SIMULATION_STOP_TIME));

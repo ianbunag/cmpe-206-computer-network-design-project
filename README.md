@@ -5,7 +5,7 @@ https://www.nsnam.org
 - [Bhimsen Thapa Chhetri](https://github.com/bhimsenthapa1)
 - [John Ian Buñag](https://github.com/ianbunag)
 
-## Install ns3
+## Install ns-3
 
 ### Clone ns-3 with git
 ```bash
