@@ -44,6 +44,10 @@ mkdir build && cd build
 cmake .. && cmake --build .
 ```
 
+## Install Wireshark
+
+https://www.wireshark.org/download.html
+
 ## Clone simulations repository
 
 All commands below are run in the simulations' directory. ns-3 and netanim binaries are referenced with relative paths.
@@ -71,12 +75,24 @@ cd cmpe-206-computer-network-design-project
 ../../../netanim/build/netanim
 ```
 
+> Open the .xml file in the `animations` directory corresponding to your simulation to view the animation.
+
 > Note: Open the .xml file in the `animations` directory corresponding to your simulation to view the animation.
 
-### Analyze the results
+### Gather metrics
+
+#### Throughput, Mean Delay, and Packet Loss Ratio
 ```bash
 python3 ../../src/flow-monitor/examples/flowmon-parse-results.py monitors/<filename>.xml
 ```
+
+> Jitter sum can be located in the flow monitor XML file.
+
+#### Retransmission and duplicate ACK counts
+
+1. Open Wireshark
+2. Open the .pcap file in the `monitors` directory corresponding to your simulation.
+3. Click Analyze > Expert Information to view the retransmission and duplicate ACK counts.
 
 ## Adding a new simulation
 1. Create a new file in `simulations` directory with the name of your simulation, e.g. `my-simulation.cc`.

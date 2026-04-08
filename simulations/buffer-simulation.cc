@@ -137,6 +137,9 @@ namespace {
 
         Monitors m;
 
+        std::string pcapBaseFileName = MONITORS_DIRECTORY + "/" + filePrefix + testName + "_r0_r1";
+        t.pointToPointHelper_r0_r1.EnablePcap(pcapBaseFileName, t.netDeviceContainer_r0_r1.Get(0), true);
+
         m.flowMonitor = m.flowMonitorHelper.InstallAll();
         std::string animationFileName = ANIMATIONS_DIRECTORY + "/" + filePrefix + testName + "_animation.xml";
         m.animationInterface = std::make_unique<AnimationInterface>(animationFileName);
