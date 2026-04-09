@@ -1,11 +1,16 @@
 # CMPE-206 Computer Network Design Project
-https://www.nsnam.org
+
+Computer Network Design Project to analyze the performance of TCP and UDP traffic under different conditions using the ns-3 network simulator.
+
+See [simulations.md](./simulations.md) for descriptions of the simulations and results.
 
 ## Owners
 - [Bhimsen Thapa Chhetri](https://github.com/bhimsenthapa1)
 - [John Ian Buñag](https://github.com/ianbunag)
 
 ## Install ns-3
+
+https://www.nsnam.org
 
 ### Clone ns-3 with git
 ```bash
@@ -70,14 +75,14 @@ cd cmpe-206-computer-network-design-project
 ./../../ns3 run 'project --simulation=example'
 ```
 
+> See simulations directory for available simulations.
+
 ### View animations
 ```bash
 ../../../netanim/build/netanim
 ```
 
 > Open the .xml file in the `animations` directory corresponding to your simulation to view the animation.
-
-> Note: Open the .xml file in the `animations` directory corresponding to your simulation to view the animation.
 
 ### Gather metrics
 

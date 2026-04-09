@@ -233,7 +233,7 @@ namespace {
                 PacketSinkHelper packetSinkHelper_d1("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), 10));
                 ApplicationContainer applicationContainer_d1 = packetSinkHelper_d1.Install(t.nodeContainerDestinations.Get(1));
                 applicationContainer_d1.Start(Seconds(0.0));
-                applicationContainer_d1.Stop(Seconds(SIMULATION_STOP_TIME));      // No additional scene setup needed for TCP-only
+                applicationContainer_d1.Stop(Seconds(SIMULATION_STOP_TIME));
             },
             [](Monitors& m, Topology& t) {
                 m.animationInterface->UpdateNodeColor(t.nodeContainerSources.Get(0), 0, 0, 255); // Blue
