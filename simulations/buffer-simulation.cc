@@ -15,7 +15,7 @@
 using namespace ns3;
 
 namespace {
-    std::map<std::string, std::string> configs = {
+    std::map<std::string, std::string> b_configs = {
         {"Small_2", "2p"},
         {"Small_10", "10p"},
         {"Normal_50", "50p"},
@@ -23,17 +23,16 @@ namespace {
         {"Large_500", "500p"}
     };
 
-    const std::string DATA_RATE_10MBPS = "10Mbps";
-    constexpr double SIMULATION_START_TIME = 1.0;
-    constexpr double SIMULATION_STOP_TIME = 20.0;
-    const uint32_t ON_TIME = 20;
-    const uint32_t OFF_TIME = 0;
-    const UintegerValue SIZE_2_MB = 2 * 1024 * 1024;
-    const UintegerValue SIZE_1_KB = 1024;
+    const std::string B_DATA_RATE_10MBPS = "10Mbps";
+    constexpr double B_SIMULATION_START_TIME = 1.0;
+    constexpr double B_SIMULATION_STOP_TIME = 20.0;
+    const uint32_t B_ON_TIME = 20;
+    const uint32_t B_OFF_TIME = 0;
+    const UintegerValue B_SIZE_2_MB = 2 * 1024 * 1024;
+    const UintegerValue B_SIZE_1_KB = 1024;
+    const std::string b_filePrefix = "buffer_simulation_";
 
-    const std::string filePrefix = "buffer_simulation_";
-
-    struct Topology {
+    struct B_Topology {
         NodeContainer nodeContainerSources,
             nodeContainerRouters,
             nodeContainerDestinations;
@@ -54,7 +53,7 @@ namespace {
         MobilityHelper mobility;
     };
 
-    struct Monitors {
+    struct B_Monitors {
         FlowMonitorHelper flowMonitorHelper;
         Ptr<FlowMonitor> flowMonitor;
         std::unique_ptr<AnimationInterface> animationInterface;
@@ -63,10 +62,10 @@ namespace {
     void runBufferSimulationWithDefaultTopology(
         std::string testName,
         std::string queueSize,
-        std::function<void(Topology&)> configureScene,
-        std::function<void(Monitors&, Topology&)> configureMonitors
+        std::function<void(B_Topology&)> configureScene,
+        std::function<void(B_Monitors&, B_Topology&)> configureMonitors
     ) {
-        Topology t;
+        B_Topology t;
 
         t.nodeContainerSources.Create(2);
         t.nodeContainerRouters.Create(2);
@@ -75,7 +74,7 @@ namespace {
         t.pointToPointHelper.SetDeviceAttribute("DataRate", StringValue("100Mbps"));
         t.pointToPointHelper.SetChannelAttribute("Delay", StringValue("1ms"));
 
-        t.pointToPointHelper_r0_r1.SetDeviceAttribute("DataRate", StringValue(DATA_RATE_10MBPS));
+        t.pointToPointHelper_r0_r1.SetDeviceAttribute("DataRate", StringValue(B_DATA_RATE_10MBPS));
         t.pointToPointHelper_r0_r1.SetChannelAttribute("Delay", StringValue("10ms"));
         t.pointToPointHelper_r0_r1.SetQueue("ns3::DropTailQueue", "MaxSize", QueueSizeValue(QueueSize(queueSize)));
 
@@ -135,13 +134,13 @@ namespace {
 
         configureScene(t);
 
-        Monitors m;
+        B_Monitors m;
 
-        std::string pcapBaseFileName = MONITORS_DIRECTORY + "/" + filePrefix + testName + "_r0_r1";
+        std::string pcapBaseFileName = MONITORS_DIRECTORY + "/" + b_filePrefix + testName + "_r0_r1";
         t.pointToPointHelper_r0_r1.EnablePcap(pcapBaseFileName, t.netDeviceContainer_r0_r1.Get(0), true);
 
         m.flowMonitor = m.flowMonitorHelper.InstallAll();
-        std::string animationFileName = ANIMATIONS_DIRECTORY + "/" + filePrefix + testName + "_animation.xml";
+        std::string animationFileName = ANIMATIONS_DIRECTORY + "/" + b_filePrefix + testName + "_animation.xml";
         m.animationInterface = std::make_unique<AnimationInterface>(animationFileName);
         m.animationInterface->SetMaxPktsPerTraceFile(1000000);
 
@@ -192,9 +191,9 @@ namespace {
 
         configureMonitors(m, t);
 
-        Simulator::Stop(Seconds(SIMULATION_STOP_TIME));
+        Simulator::Stop(Seconds(B_SIMULATION_STOP_TIME));
         Simulator::Run();
-        std::string flowFileName = MONITORS_DIRECTORY + "/" + filePrefix + testName + "_flow.xml";
+        std::string flowFileName = MONITORS_DIRECTORY + "/" + b_filePrefix + testName + "_flow.xml";
         m.flowMonitor->SerializeToXmlFile(flowFileName, true, true);
         Simulator::Destroy();
     }
@@ -206,36 +205,36 @@ namespace {
         NS_LOG_UNCOND("Starting runBufferSimulationTcp test " << testName << " with queue size: " << queueSize);
 
         Config::SetDefault("ns3::TcpL4Protocol::SocketType", StringValue("ns3::TcpCubic"));
-        Config::SetDefault("ns3::TcpSocket::SndBufSize", SIZE_2_MB);
-        Config::SetDefault("ns3::TcpSocket::RcvBufSize", SIZE_2_MB);
+        Config::SetDefault("ns3::TcpSocket::SndBufSize", B_SIZE_2_MB);
+        Config::SetDefault("ns3::TcpSocket::RcvBufSize", B_SIZE_2_MB);
 
         runBufferSimulationWithDefaultTopology(
             testName + "_tcp_only",
             queueSize,
-            [](Topology& t) {
+            [](B_Topology& t) {
                 BulkSendHelper bulkSendHelper_d0("ns3::TcpSocketFactory", InetSocketAddress(t.ipv4InterfaceContainer_r1_d0.GetAddress(1), 9));
                 bulkSendHelper_d0.SetAttribute("MaxBytes", UintegerValue(0)); // unlimited
                 ApplicationContainer applicationContainer_s0 = bulkSendHelper_d0.Install(t.nodeContainerSources.Get(0));
-                applicationContainer_s0.Start(Seconds(SIMULATION_START_TIME));
-                applicationContainer_s0.Stop(Seconds(SIMULATION_STOP_TIME));
+                applicationContainer_s0.Start(Seconds(B_SIMULATION_START_TIME));
+                applicationContainer_s0.Stop(Seconds(B_SIMULATION_STOP_TIME));
 
                 PacketSinkHelper packetSinkHelper_d0("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), 9));
                 ApplicationContainer applicationContainer_d0 = packetSinkHelper_d0.Install(t.nodeContainerDestinations.Get(0));
                 applicationContainer_d0.Start(Seconds(0.0));
-                applicationContainer_d0.Stop(Seconds(SIMULATION_STOP_TIME));
+                applicationContainer_d0.Stop(Seconds(B_SIMULATION_STOP_TIME));
 
                 BulkSendHelper bulkSendHelper_d1("ns3::TcpSocketFactory", InetSocketAddress(t.ipv4InterfaceContainer_r1_d1.GetAddress(1), 10));
                 bulkSendHelper_d1.SetAttribute("MaxBytes", UintegerValue(0)); // unlimited
                 ApplicationContainer applicationContainer_s1 = bulkSendHelper_d1.Install(t.nodeContainerSources.Get(1));
-                applicationContainer_s1.Start(Seconds(SIMULATION_START_TIME));
-                applicationContainer_s1.Stop(Seconds(SIMULATION_STOP_TIME));
+                applicationContainer_s1.Start(Seconds(B_SIMULATION_START_TIME));
+                applicationContainer_s1.Stop(Seconds(B_SIMULATION_STOP_TIME));
 
                 PacketSinkHelper packetSinkHelper_d1("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), 10));
                 ApplicationContainer applicationContainer_d1 = packetSinkHelper_d1.Install(t.nodeContainerDestinations.Get(1));
                 applicationContainer_d1.Start(Seconds(0.0));
-                applicationContainer_d1.Stop(Seconds(SIMULATION_STOP_TIME));
+                applicationContainer_d1.Stop(Seconds(B_SIMULATION_STOP_TIME));
             },
-            [](Monitors& m, Topology& t) {
+            [](B_Monitors& m, B_Topology& t) {
                 m.animationInterface->UpdateNodeColor(t.nodeContainerSources.Get(0), 0, 0, 255); // Blue
                 m.animationInterface->UpdateNodeColor(t.nodeContainerSources.Get(1), 0, 0, 255); // Blue
                 m.animationInterface->UpdateNodeColor(t.nodeContainerDestinations.Get(0), 0, 0, 255); // Blue
@@ -255,36 +254,36 @@ namespace {
         runBufferSimulationWithDefaultTopology(
             testName + "_udp_only",
             queueSize,
-            [](Topology& t) {
+            [](B_Topology& t) {
                 OnOffHelper onOffHelper_d0("ns3::UdpSocketFactory", InetSocketAddress(t.ipv4InterfaceContainer_r1_d0.GetAddress(1), 9));
-                onOffHelper_d0.SetAttribute("OnTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(ON_TIME) + "]"));
-                onOffHelper_d0.SetAttribute("OffTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(OFF_TIME) + "]"));
-                onOffHelper_d0.SetAttribute("DataRate", StringValue(DATA_RATE_10MBPS));
-                onOffHelper_d0.SetAttribute("PacketSize", SIZE_1_KB);
+                onOffHelper_d0.SetAttribute("OnTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(B_ON_TIME) + "]"));
+                onOffHelper_d0.SetAttribute("OffTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(B_OFF_TIME) + "]"));
+                onOffHelper_d0.SetAttribute("DataRate", StringValue(B_DATA_RATE_10MBPS));
+                onOffHelper_d0.SetAttribute("PacketSize", B_SIZE_1_KB);
                 ApplicationContainer applicationContainer_s0 = onOffHelper_d0.Install(t.nodeContainerSources.Get(0));
-                applicationContainer_s0.Start(Seconds(SIMULATION_START_TIME));
-                applicationContainer_s0.Stop(Seconds(SIMULATION_STOP_TIME));
+                applicationContainer_s0.Start(Seconds(B_SIMULATION_START_TIME));
+                applicationContainer_s0.Stop(Seconds(B_SIMULATION_STOP_TIME));
 
                 PacketSinkHelper packetSinkHelper_d0("ns3::UdpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), 9));
                 ApplicationContainer applicationContainer_d0 = packetSinkHelper_d0.Install(t.nodeContainerDestinations.Get(0));
                 applicationContainer_d0.Start(Seconds(0.0));
-                applicationContainer_d0.Stop(Seconds(SIMULATION_STOP_TIME));
+                applicationContainer_d0.Stop(Seconds(B_SIMULATION_STOP_TIME));
 
                 OnOffHelper onOffHelper_d1("ns3::UdpSocketFactory", InetSocketAddress(t.ipv4InterfaceContainer_r1_d1.GetAddress(1), 10));
-                onOffHelper_d1.SetAttribute("OnTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(ON_TIME) + "]"));
-                onOffHelper_d1.SetAttribute("OffTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(OFF_TIME) + "]"));
-                onOffHelper_d1.SetAttribute("DataRate", StringValue(DATA_RATE_10MBPS));
-                onOffHelper_d1.SetAttribute("PacketSize", SIZE_1_KB);
+                onOffHelper_d1.SetAttribute("OnTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(B_ON_TIME) + "]"));
+                onOffHelper_d1.SetAttribute("OffTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(B_OFF_TIME) + "]"));
+                onOffHelper_d1.SetAttribute("DataRate", StringValue(B_DATA_RATE_10MBPS));
+                onOffHelper_d1.SetAttribute("PacketSize", B_SIZE_1_KB);
                 ApplicationContainer applicationContainer_s1 = onOffHelper_d1.Install(t.nodeContainerSources.Get(1));
-                applicationContainer_s1.Start(Seconds(SIMULATION_START_TIME));
-                applicationContainer_s1.Stop(Seconds(SIMULATION_STOP_TIME));
+                applicationContainer_s1.Start(Seconds(B_SIMULATION_START_TIME));
+                applicationContainer_s1.Stop(Seconds(B_SIMULATION_STOP_TIME));
 
                 PacketSinkHelper packetSinkHelper_d1("ns3::UdpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), 10));
                 ApplicationContainer applicationContainer_d1 = packetSinkHelper_d1.Install(t.nodeContainerDestinations.Get(1));
                 applicationContainer_d1.Start(Seconds(0.0));
-                applicationContainer_d1.Stop(Seconds(SIMULATION_STOP_TIME));
+                applicationContainer_d1.Stop(Seconds(B_SIMULATION_STOP_TIME));
             },
-            [](Monitors& m, Topology& t) {
+            [](B_Monitors& m, B_Topology& t) {
                 m.animationInterface->UpdateNodeColor(t.nodeContainerSources.Get(0), 255, 0, 0); // Red
                 m.animationInterface->UpdateNodeColor(t.nodeContainerSources.Get(1), 255, 0, 0); // Red
                 m.animationInterface->UpdateNodeColor(t.nodeContainerDestinations.Get(0), 255, 0, 0); // Red
@@ -302,42 +301,42 @@ namespace {
         NS_LOG_UNCOND("Starting runBufferSimulationMixed test " << testName << " with queue size: " << queueSize);
 
         Config::SetDefault("ns3::TcpL4Protocol::SocketType", StringValue("ns3::TcpCubic"));
-        Config::SetDefault("ns3::TcpSocket::SndBufSize", SIZE_2_MB);
-        Config::SetDefault("ns3::TcpSocket::RcvBufSize", SIZE_2_MB);
+        Config::SetDefault("ns3::TcpSocket::SndBufSize", B_SIZE_2_MB);
+        Config::SetDefault("ns3::TcpSocket::RcvBufSize", B_SIZE_2_MB);
 
         runBufferSimulationWithDefaultTopology(
             testName + "_mixed",
             queueSize,
-            [](Topology& t) {
+            [](B_Topology& t) {
                 OnOffHelper onOffHelper_d0("ns3::TcpSocketFactory", InetSocketAddress(t.ipv4InterfaceContainer_r1_d0.GetAddress(1), 9));
-                onOffHelper_d0.SetAttribute("OnTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(ON_TIME) + "]"));
-                onOffHelper_d0.SetAttribute("OffTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(OFF_TIME) + "]"));
+                onOffHelper_d0.SetAttribute("OnTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(B_ON_TIME) + "]"));
+                onOffHelper_d0.SetAttribute("OffTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(B_OFF_TIME) + "]"));
                 onOffHelper_d0.SetAttribute("DataRate", StringValue("8Mbps")); // 80% of total traffic
-                onOffHelper_d0.SetAttribute("PacketSize", SIZE_1_KB);
+                onOffHelper_d0.SetAttribute("PacketSize", B_SIZE_1_KB);
                 ApplicationContainer applicationContainer_s0 = onOffHelper_d0.Install(t.nodeContainerSources.Get(0));
-                applicationContainer_s0.Start(Seconds(SIMULATION_START_TIME));
-                applicationContainer_s0.Stop(Seconds(SIMULATION_STOP_TIME));
+                applicationContainer_s0.Start(Seconds(B_SIMULATION_START_TIME));
+                applicationContainer_s0.Stop(Seconds(B_SIMULATION_STOP_TIME));
 
                 PacketSinkHelper packetSinkHelper_d0("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), 9));
                 ApplicationContainer applicationContainer_d0 = packetSinkHelper_d0.Install(t.nodeContainerDestinations.Get(0));
                 applicationContainer_d0.Start(Seconds(0.0));
-                applicationContainer_d0.Stop(Seconds(SIMULATION_STOP_TIME));
+                applicationContainer_d0.Stop(Seconds(B_SIMULATION_STOP_TIME));
 
                 OnOffHelper onOffHelper_d1("ns3::UdpSocketFactory", InetSocketAddress(t.ipv4InterfaceContainer_r1_d1.GetAddress(1), 10));
-                onOffHelper_d1.SetAttribute("OnTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(ON_TIME) + "]"));
-                onOffHelper_d1.SetAttribute("OffTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(OFF_TIME) + "]"));
+                onOffHelper_d1.SetAttribute("OnTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(B_ON_TIME) + "]"));
+                onOffHelper_d1.SetAttribute("OffTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(B_OFF_TIME) + "]"));
                 onOffHelper_d1.SetAttribute("DataRate", StringValue("2Mbps")); // 20% of total traffic
-                onOffHelper_d1.SetAttribute("PacketSize", SIZE_1_KB);
+                onOffHelper_d1.SetAttribute("PacketSize", B_SIZE_1_KB);
                 ApplicationContainer applicationContainer_s1 = onOffHelper_d1.Install(t.nodeContainerSources.Get(1));
-                applicationContainer_s1.Start(Seconds(SIMULATION_START_TIME));
-                applicationContainer_s1.Stop(Seconds(SIMULATION_STOP_TIME));
+                applicationContainer_s1.Start(Seconds(B_SIMULATION_START_TIME));
+                applicationContainer_s1.Stop(Seconds(B_SIMULATION_STOP_TIME));
 
                 PacketSinkHelper packetSinkHelper_d1("ns3::UdpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), 10));
                 ApplicationContainer applicationContainer_d1 = packetSinkHelper_d1.Install(t.nodeContainerDestinations.Get(1));
                 applicationContainer_d1.Start(Seconds(0.0));
-                applicationContainer_d1.Stop(Seconds(SIMULATION_STOP_TIME));
+                applicationContainer_d1.Stop(Seconds(B_SIMULATION_STOP_TIME));
             },
-            [](Monitors& m, Topology& t) {
+            [](B_Monitors& m, B_Topology& t) {
                 m.animationInterface->UpdateNodeColor(t.nodeContainerSources.Get(0), 0, 0, 255); // Blue
                 m.animationInterface->UpdateNodeColor(t.nodeContainerSources.Get(1), 255, 0, 0); // Red
                 m.animationInterface->UpdateNodeColor(t.nodeContainerDestinations.Get(0), 0, 0, 255); // Blue
@@ -353,7 +352,7 @@ void runBufferSimulation() {
     NS_LOG_COMPONENT_DEFINE("BufferSimulation");
 
     std::cout << "Available Test Configurations:" << std::endl;
-    for (const auto& config : configs) {
+    for (const auto& config : b_configs) {
         std::cout << "  - " << config.first << " (Queue Size: " << config.second << ")" << std::endl;
     }
 
@@ -361,12 +360,12 @@ void runBufferSimulation() {
     std::cout << "\nEnter Test Name: ";
     std::getline(std::cin, testName);
 
-    if (configs.find(testName) == configs.end()) {
+    if (b_configs.find(testName) == b_configs.end()) {
         std::cerr << "Invalid test name.";
         return;
     }
 
-    std::string queueSize = configs[testName];
+    std::string queueSize = b_configs[testName];
 
     std::cout << "\nAvailable Traffic Modes:" << std::endl;
     std::cout << "  -  tcp_only" << std::endl;
