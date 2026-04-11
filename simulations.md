@@ -32,7 +32,7 @@ In the following topology, blue nodes represent TCP sources and destinations, re
 
 ## class-imbalance-simulation
 
-This simulation demonstrates protocol fairness and UDP starvation in a dumbbell topology. The objective is to analyze how TCP and UDP flows compete for bandwidth. Metrics such as throughput, latency, and packet loss are collected to understand the impact of different buffer sizes on network performance. See results and line charts in https://docs.google.com/spreadsheets/d/e/2PACX-1vQCXbfnjDvc32tZkmyNE39POfm0AMOsht9wSjESLmo_ZB2PHFEl9ZhRm6wgNQlUNGGVY5VvGFRB_JVK/pubhtml.
+This simulation demonstrates protocol fairness and UDP starvation in a dumbbell topology. The objective is to analyze how TCP and UDP flows compete for bandwidth. Metrics such as throughput, latency, and packet loss are collected to understand the impact of protocol distribution on network performance. See results and line charts in https://docs.google.com/spreadsheets/d/e/2PACX-1vQCXbfnjDvc32tZkmyNE39POfm0AMOsht9wSjESLmo_ZB2PHFEl9ZhRm6wgNQlUNGGVY5VvGFRB_JVK/pubhtml.
 
 The primary parameter of this simulation is the TCP to UDP flow ratio, tested at five specific points: 9:1, 7:3, 5:5 (baseline), 3:7, and 1:9.
 
