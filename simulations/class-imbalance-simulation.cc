@@ -27,12 +27,8 @@ namespace {
         {"3:7", {3, 7}},
         {"1:9", {1, 9}}
     };
-    const std::string CI_DATA_RATE_10MBPS = "10Mbps";
-    const std::string CI_DATA_RATE_1MBPS = "1Mbps";
     constexpr double CI_SIMULATION_START_TIME = 1.0;
     constexpr double CI_SIMULATION_STOP_TIME = 20.0;
-    const uint32_t CI_ON_TIME = 20;
-    const uint32_t CI_OFF_TIME = 0;
     const UintegerValue CI_SIZE_2_MB = 2 * 1024 * 1024;
     const UintegerValue CI_SIZE_1_KB = 1024;
     const std::string ci_filePrefix = "class_imbalance_";
@@ -74,7 +70,7 @@ namespace {
         t.pointToPointHelper.SetDeviceAttribute("DataRate", StringValue("100Mbps"));
         t.pointToPointHelper.SetChannelAttribute("Delay", StringValue("1ms"));
 
-        t.pointToPointHelper_r0_r1.SetDeviceAttribute("DataRate", StringValue(CI_DATA_RATE_10MBPS));
+        t.pointToPointHelper_r0_r1.SetDeviceAttribute("DataRate", StringValue("10Mbps"));
         t.pointToPointHelper_r0_r1.SetChannelAttribute("Delay", StringValue("10ms"));
         t.pointToPointHelper_r0_r1.SetQueue("ns3::DropTailQueue", "MaxSize", QueueSizeValue(QueueSize("50p")));
 
@@ -253,9 +249,9 @@ namespace {
                         "ns3::UdpSocketFactory",
                         InetSocketAddress(t.ipv4InterfaceContainers_r1_to_destinations[index].GetAddress(1), 9)
                     );
-                    onOffHelper.SetAttribute("OnTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(CI_ON_TIME) + "]"));
-                    onOffHelper.SetAttribute("OffTime", StringValue("ns3::ConstantRandomVariable[Constant=" + std::to_string(CI_OFF_TIME) + "]"));
-                    onOffHelper.SetAttribute("DataRate", StringValue(CI_DATA_RATE_1MBPS));
+                    onOffHelper.SetAttribute("OnTime", StringValue("ns3::ConstantRandomVariable[Constant=20]"));
+                    onOffHelper.SetAttribute("OffTime", StringValue("ns3::ConstantRandomVariable[Constant=0]"));
+                    onOffHelper.SetAttribute("DataRate", StringValue("1.1Mbps"));
                     onOffHelper.SetAttribute("PacketSize", CI_SIZE_1_KB);
                     ApplicationContainer sourceContainer = onOffHelper.Install(t.nodeContainerSources.Get(index));
                     sourceContainer.Start(Seconds(CI_SIMULATION_START_TIME));
