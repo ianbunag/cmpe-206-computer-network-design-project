@@ -32,7 +32,7 @@ In the following topology, blue nodes represent TCP sources and destinations, re
 
 ## class-imbalance-simulation
 
-This simulation demonstrates protocol fairness and UDP starvation in a dumbbell topology. The objective is to analyze how TCP and UDP flows compete for bandwidth. Metrics such as throughput, latency, and packet loss are collected to understand the impact of protocol distribution on network performance. See results and line charts in https://docs.google.com/spreadsheets/d/e/2PACX-1vQCXbfnjDvc32tZkmyNE39POfm0AMOsht9wSjESLmo_ZB2PHFEl9ZhRm6wgNQlUNGGVY5VvGFRB_JVK/pubhtml.
+This simulation demonstrates protocol fairness in a dumbbell topology. The objective is to analyze how TCP and UDP flows compete for bandwidth. Metrics such as throughput, latency, and packet loss are collected to understand the impact of protocol distribution on network performance. See results and line charts in https://docs.google.com/spreadsheets/d/e/2PACX-1vQCXbfnjDvc32tZkmyNE39POfm0AMOsht9wSjESLmo_ZB2PHFEl9ZhRm6wgNQlUNGGVY5VvGFRB_JVK/pubhtml.
 
 The primary parameter of this simulation is the TCP to UDP flow ratio, tested at five specific points: 9:1, 7:3, 5:5 (baseline), 3:7, and 1:9.
 
@@ -40,7 +40,7 @@ The topology is a dumbbell topology with N sources and N destinations (where N =
 
 Each TCP source sends as much data as possible with no maximum byte limit.
 
-Each UDP source sends at a constant rate of 1.1 Mbps and packet size of 1 KB. This rate is chosen to be slightly above the fair share of bandwidth for each flow (which is 1 Mbps for 10 total flows) to demonstrate the effects of protocol competition.
+Each UDP source sends at a constant rate of 1.1 Mbps and packet size of 1 KB. This rate is chosen to be slightly above the fair share of bandwidth for each flow to demonstrate the effects of protocol competition.
 
 In the following topology, blue nodes represent TCP sources and destinations, red nodes represent UDP sources and destinations, and green nodes represent routers.
 
