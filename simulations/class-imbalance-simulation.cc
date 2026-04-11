@@ -21,11 +21,11 @@ namespace {
         uint32_t udpFlows;
     };
     std::map<std::string, CI_Config> ci_configs = {
-        {"9:1", {9, 1}},
-        {"7:3", {7, 3}},
-        {"5:5", {5, 5}},
-        {"3:7", {3, 7}},
-        {"1:9", {1, 9}}
+        {"9-to-1", {9, 1}},
+        {"7-to-3", {7, 3}},
+        {"5-to-5", {5, 5}},
+        {"3-to-7", {3, 7}},
+        {"1-to-9", {1, 9}}
     };
     constexpr double CI_SIMULATION_START_TIME = 1.0;
     constexpr double CI_SIMULATION_STOP_TIME = 20.0;
