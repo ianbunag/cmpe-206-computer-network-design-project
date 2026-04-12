@@ -62,7 +62,7 @@ In the UDP mode, sources send at a constant rate of 5 Mbps and packet size of 1 
 
 The mixed mode represents a typical real world traffic distribution by allocating 80% of the bandwidth to TCP and 20% to UDP. In this setup, both sources send as much TCP data as possible with no maximum byte limit and UDP packets at 1 Mbps with a standard packet size of 1 KB.
 
-In the following topology, blue nodes represent TCP sources and destinations, red nodes represent UDP sources and destinations, purplse nodes represent TCP and UDP sources and destinations, and green nodes represent routers.
+In the following topology, blue nodes represent TCP sources and destinations, red nodes represent UDP sources and destinations, purple nodes represent TCP and UDP sources and destinations, and green nodes represent routers.
 
 **TCP mode topology**
 
