@@ -102,7 +102,8 @@ namespace {
         );
 
         Ptr<RateErrorModel> errorModel = CreateObject<RateErrorModel>();
-        errorModel->SetAttribute("ErrorRate", DoubleValue(0.001)); // 0.1% Bit Error Rate
+        errorModel->SetAttribute("ErrorRate", DoubleValue(0.000001)); // 0.0001% Bit Error Rate
+        t.netDeviceContainer_r0_r1.Get(0)->SetAttribute("ReceiveErrorModel", PointerValue(errorModel));
         t.netDeviceContainer_r0_r1.Get(1)->SetAttribute("ReceiveErrorModel", PointerValue(errorModel));
 
         t.internetStackHelper.Install(t.nodeContainerSources);
@@ -168,7 +169,7 @@ namespace {
         m.animationInterface->UpdateNodeDescription(t.nodeContainerDestinations.Get(1), "Destination 1");
 
         std::string baselineLinkDescription = "Baseline link (Rate: 100Mbps, Delay: 1ms)";
-        std::string bottleneckLinkDescription = "Bottleneck link (Rate: 10Mbps, Delay: " + bottleneckDelay + ", BER: 0.1%, Queue: 50p)";
+        std::string bottleneckLinkDescription = "Bottleneck link (Rate: 10Mbps, Delay: " + bottleneckDelay + ", BER: 0.0001%, Queue: 50p)";
         m.animationInterface->UpdateLinkDescription(
             t.nodeContainerSources.Get(0),
             t.nodeContainerRouters.Get(0),
