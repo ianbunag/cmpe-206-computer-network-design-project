@@ -31,7 +31,7 @@ namespace {
     constexpr double CI_SIMULATION_STOP_TIME = 20.0;
     const UintegerValue CI_SIZE_2_MB = 2 * 1024 * 1024;
     const UintegerValue CI_SIZE_1_KB = 1024;
-    const std::string ci_filePrefix = "class_imbalance_";
+    const std::string ci_filePrefix = "class_imbalance_simulation_";
 
     struct CI_Topology {
         NodeContainer nodeContainerSources,

@@ -45,3 +45,33 @@ Each UDP source sends at a constant rate of 1.1 Mbps and packet size of 1 KB. Th
 In the following topology, blue nodes represent TCP sources and destinations, red nodes represent UDP sources and destinations, and green nodes represent routers.
 
 ![Class imbalance simulation topology](./images/class-imbalance-simulation.png)
+
+## latency-simulation
+
+This simulation analyzes how latency affects data flow. Metrics such as throughput, latency, and packet loss are collected to understand the impact of different latency values on network performance. See results and line charts in https://docs.google.com/spreadsheets/d/e/2PACX-1vRQPACQlu8_Yyi_I3OMC3gGMgHyzqB2zsj7p6WtYdticXVQkc640Z3VUsVa4CWgx-sJjfK4c6dpfiJK/pubhtml.
+
+The primary parameter of this simulation is the latency of the link between the two routers, which is set to 10ms (baseline), 50ms, 100ms, 200ms, and 400ms.
+
+Performance is analyzed across three traffic modes - TCP, UDP, and mixed.
+
+The topology is a standard dumbbell topology with 2 sources and 2 destinations separated by 2 routers. The sources and destinations are connected to the routers with 100 Mbps links and 1ms delay, while the routers are connected to each other with a 10 Mbps link and a variable delay based on the latency being tested. The routers have a Bit Error Rate (BER) of 0.0001% to simulate links with a small chance of packet loss due to interference or other issues.
+
+In the TCP mode, sources send as much data as possible with no maximum byte limit.
+
+In the UDP mode, sources send at a constant rate of 5 Mbps and packet size of 1 KB.
+
+The mixed mode represents a typical real world traffic distribution by allocating 80% of the bandwidth to TCP and 20% to UDP. In this setup, both sources send as much TCP data as possible with no maximum byte limit and UDP packets at 1 Mbps with a standard packet size of 1 KB.
+
+In the following topology, blue nodes represent TCP sources and destinations, red nodes represent UDP sources and destinations, purple nodes represent TCP and UDP sources and destinations, and green nodes represent routers.
+
+**TCP mode topology**
+
+![TCP mode latency simulation topology](./images/latency-simulation-tcp.png)
+
+**UDP mode topology**
+
+![UDP mode latency simulation topology](./images/latency-simulation-udp.png)
+
+**Mixed mode topology**
+
+![Mixed mode latency simulation topology](./images/latency-simulation-mixed.png)
