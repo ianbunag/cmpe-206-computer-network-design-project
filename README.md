@@ -59,7 +59,7 @@ All commands below are run in the simulations' directory. ns-3 and netanim binar
 
 ### Structure
 - animations - contains netanim animation files
-- monitors - contains flow monitor XML files
+- monitors - contains PCAP and flow monitor XML files
 - simulations - contains the C++ source code for the simulations
 - project.cc - contains the main function that runs the simulations based on command line arguments
 
@@ -91,7 +91,7 @@ cd cmpe-206-computer-network-design-project
 python3 ../../src/flow-monitor/examples/flowmon-parse-results.py monitors/<filename>.xml
 ```
 
-> Jitter sum can be located in the flow monitor XML file.
+> Jitter sum and rxPackets can be located in the flow monitor XML file.
 
 #### Retransmission and duplicate ACK counts
 
