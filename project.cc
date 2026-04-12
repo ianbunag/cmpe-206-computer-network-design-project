@@ -2,6 +2,7 @@
 #include "simulations/first.cc"
 #include "simulations/buffer-simulation.cc"
 #include "simulations/class-imbalance-simulation.cc"
+#include "simulations/latency-simulation.cc"
 
 #include "ns3/core-module.h"
 
@@ -24,6 +25,8 @@ main(int argc, char* argv[])
         runBufferSimulation();
     } else if (simulation == "class-imbalance-simulation") {
         runClassImbalanceSimulation();
+    } else if (simulation == "latency-simulation") {
+        runLatencySimulation();
     } else {
         NS_LOG_UNCOND("Simulation not found");
     }
